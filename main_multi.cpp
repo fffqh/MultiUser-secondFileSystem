@@ -20,6 +20,7 @@
 #define BACKLOG 128
 
 using namespace std;
+
 bool isNumber(const string& str)
 {
     for (char const &c : str) {
@@ -55,6 +56,7 @@ public:
         cout<<send_str.str()<<endl;
         int numbytes=send(fd,send_str.str().c_str(),sizeof(send_str.str()),0); 
         cout<< "["<< username<<"] send numbytes "<<numbytes<<endl;       
+        return numbytes;
     };
     sendU(int fd,string username){
         this->fd=fd;
@@ -67,8 +69,8 @@ void *start_routine( void *ptr)
     int fd = *(int *)ptr;
     char buf[1024];
     int numbytes;
-    int i,c=0;
-    cout<<("进入用户线程，fd=%d\n", fd);
+    //int i,c=0;
+    printf("进入用户线程，fd=%d\n", fd);
     memset(buf, 0, sizeof(buf));
     numbytes=send(fd,"请输入用户名",sizeof("请输入用户名"),0); 
     cout << "[info] send函数返回值："  << numbytes << endl;
@@ -83,17 +85,22 @@ void *start_routine( void *ptr)
     sd.send_(print_head());
     string tipswords="||SecondFileSystem@"+username+"请输入函数名及参数$";
 
+    // 初始化用户User结构和目录
+    SecondFileKernel::Instance().GetUserManager().Login(username);
+
     while(true){
         char buf_recv[1024];
         numbytes=send(fd,tipswords.c_str(),sizeof(tipswords),0); 
         if(numbytes<=0){
             cout<<"[info] 用户 "<<username<<" 断开连接."<<endl;
+            SecondFileKernel::Instance().GetUserManager().Logout();
             exit(1);
         }
         // 读取用户输入的命令行
         if ((numbytes=recv(fd,buf_recv,1024,0)) == -1){ 
-            cout<<"recv() error"<<endl; 
-            exit(1); 
+            cout<<"recv() error"<<endl;
+            SecondFileKernel::Instance().GetUserManager().Logout();
+            exit(1);
         } 
         //解析命令名称
         stringstream ss(buf_recv);
@@ -187,8 +194,7 @@ void *start_routine( void *ptr)
             send_str<<"mkfile sucess"<<endl;
             sd.send_(send_str);
             continue;
-        }
-        
+        }     
         if(api == "rm"){
             string filename;
             ss >> filename;
@@ -477,7 +483,7 @@ void *start_routine( void *ptr)
             ss >> p1_ifpath >> p2_ofpath;
             if (p1_ifpath == "" || p2_ofpath == "")
             {
-                send_str << "copyout ifpath ofpath\n";
+                send_str << "copyout [ifpath] [ofpath]\n";
                 send_str << "参数个数错误" << endl;
                 sd.send_(send_str);
                 continue;
@@ -529,8 +535,14 @@ void *start_routine( void *ptr)
             sd.send_(send_str);
             continue;
         }
-        
+        if (api == "q" || api == "quit"){
+            SecondFileKernel::Instance().GetUserManager().Logout();
+            send_str << "用户登出\n";
+            sd.send_(send_str);
+            break;
+        }
     }
+
     close(fd);
 }
 

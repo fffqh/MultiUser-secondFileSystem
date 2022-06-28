@@ -133,9 +133,8 @@ Buf* BufferManager::Bread(int blkno)
 
 void BufferManager::Bwrite(Buf *bp)
 {
-	unsigned int flags;
-
-	flags = bp->b_flags;
+	// unsigned int flags;
+	// flags = bp->b_flags;
 	bp->b_flags &= ~(Buf::B_READ | Buf::B_DONE | Buf::B_ERROR | Buf::B_DELWRI);
 	bp->b_wcount = BufferManager::BUFFER_SIZE;		/* 512字节 */
 

@@ -112,3 +112,9 @@ User &SecondFileKernel::GetUser()
 {
     return *(this->m_UserManager->GetUser());
 }
+
+UserManager& SecondFileKernel::GetUserManager()
+{
+    return *(this->m_UserManager);
+}
+

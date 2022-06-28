@@ -16,7 +16,7 @@
 #include <netinet/in.h> 
 #include <arpa/inet.h>
 #include<pthread.h>
-#define PORT 1234 
+#define PORT 1235
 #define BACKLOG 128
 
 using namespace std;
@@ -30,20 +30,20 @@ bool isNumber(const string& str)
 
 stringstream print_head(){
 	stringstream send_str;
-    send_str << "===============================================================" << endl;
-    send_str << "||请在一行中依次输入需要调用的函数名称及其参数                  ||" << endl;
-    send_str << "||open(char *name, int mode)                                 ||" << endl;
-    send_str << "||close(int fd)                                              ||" << endl;
-    send_str << "||read(int fd, int length)                                   ||" << endl;
-    send_str << "||write(int fd, char *buffer, int length)                    ||" << endl;
-    send_str << "||seek(int fd, int position, int ptrname)                    ||" << endl;
-    send_str << "||mkfile(char *name, int mode)                               ||" << endl;
-    send_str << "||rm(char *name)                                             ||" << endl;
-    send_str << "||ls()                                                       ||" << endl;
-    send_str << "||mkdir(char* dirname)                                       ||" << endl;
-    send_str << "||cd(char* dirname)                                          ||" << endl;
-    send_str << "||cat(char* dirname)                                         ||" << endl;
-    send_str << "||q/Q 退出文件系统                                            ||" << endl << endl << endl;
+    send_str << "===============================================" << endl;
+    send_str << "||请在一行中依次输入需要调用的函数名称及其参数  ||" << endl;
+    send_str << "||open(char *name, int mode)                 ||" << endl;
+    send_str << "||close(int fd)                              ||" << endl;
+    send_str << "||read(int fd, int length)                   ||" << endl;
+    send_str << "||write(int fd, char *buffer, int length)    ||" << endl;
+    send_str << "||seek(int fd, int position, int ptrname)    ||" << endl;
+    send_str << "||mkfile(char *name, int mode)               ||" << endl;
+    send_str << "||rm(char *name)                             ||" << endl;
+    send_str << "||ls()                                       ||" << endl;
+    send_str << "||mkdir(char* dirname)                       ||" << endl;
+    send_str << "||cd(char* dirname)                          ||" << endl;
+    send_str << "||cat(char* dirname)                         ||" << endl;
+    send_str << "||q/Q 退出文件系统                            ||" << endl << endl << endl;
 	return send_str;
 }
 class sendU{
@@ -54,7 +54,7 @@ public:
     int send_(const stringstream& send_str){
         cout<<send_str.str()<<endl;
         int numbytes=send(fd,send_str.str().c_str(),sizeof(send_str.str()),0); 
-        cout<<username<<" send numbytes "<<numbytes<<endl;       
+        cout<< "["<< username<<"] send numbytes "<<numbytes<<endl;       
     };
     sendU(int fd,string username){
         this->fd=fd;
@@ -68,19 +68,18 @@ void *start_routine( void *ptr)
     char buf[1024];
     int numbytes;
     int i,c=0;
-    cout<<("this is a new thread,you got connected\n");
-    cout<<"fd"<<fd<<endl;
-
+    cout<<("进入用户线程，fd=%d\n", fd);
+    memset(buf, 0, sizeof(buf));
     numbytes=send(fd,"请输入用户名",sizeof("请输入用户名"),0); 
-    cout<<"send 请输入用户名"<<numbytes<<endl;
+    cout << "[info] send函数返回值："  << numbytes << endl;
     if ((numbytes=recv(fd,buf,1024,0)) == -1){ 
         cout<<("recv() error\n"); 
         exit(1); 
-    } 
+    }
     string username=buf;
-    cout<<username<<endl;
-    SecondFileKernel::Instance().Initialize();
-    sendU sd(fd,username);    
+    cout << "[info] 用户输入用户名："  << username << endl;
+    
+    sendU sd(fd,username);
     sd.send_(print_head());
     string tipswords="||SecondFileSystem@"+username+"请输入函数名及参数$";
 
@@ -88,7 +87,7 @@ void *start_routine( void *ptr)
         char buf_recv[1024];
         numbytes=send(fd,tipswords.c_str(),sizeof(tipswords),0); 
         if(numbytes<=0){
-            cout<<"user "<<username<<" lost connection."<<endl;
+            cout<<"[info] 用户 "<<username<<" 断开连接."<<endl;
             exit(1);
         }
         // 读取用户输入的命令行
@@ -114,10 +113,10 @@ void *start_routine( void *ptr)
             // 调用
             User &u=SecondFileKernel::Instance().GetUser();
 			u.u_error= NOERROR;
-			char dirname[512]={0};
+			char dirname[300]={0};
             strcpy(dirname,param1.c_str());
             u.u_dirp=dirname;
-            u.u_arg[0]=int(dirname);
+            u.u_arg[0]=(unsigned long long)(dirname);
 	        FileManager &fimanag = SecondFileKernel::Instance().GetFileManager();
 	        fimanag.ChDir();
             // 打印结果
@@ -160,17 +159,8 @@ void *start_routine( void *ptr)
                 sd.send_(send_str);
                 continue;
             }
-			int defaultmode=040755;
-			User &u = SecondFileKernel::Instance().GetUser();
-			u.u_error = NOERROR;
-            char filename_char[512];
-			strcpy(filename_char,path.c_str());
-            u.u_dirp=filename_char;
-			u.u_arg[1] = defaultmode;
-			u.u_arg[2] = 0;
-			FileManager &fimanag = SecondFileKernel::Instance().GetFileManager();
-			fimanag.MkNod();
-            send_str<<"mkdir success"<<endl;
+            int ret = SecondFileKernel::Instance().Sys_CreatDir(path);
+            send_str<<"mkdir success (ret=" << ret << ")" <<endl;
             sd.send_(send_str);
             continue;
         }
@@ -545,10 +535,10 @@ void *start_routine( void *ptr)
 }
 
 
-int  main()  
+int main()
 { 
     int listenfd, connectfd;    
-    struct sockaddr_in server; 
+    struct sockaddr_in server;
     struct sockaddr_in client;      
     int sin_size; 
     sin_size=sizeof(struct sockaddr_in); 
@@ -559,9 +549,8 @@ int  main()
         exit(1);
     }
 
-
     int opt = SO_REUSEADDR;
-    setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+    setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)); //使得端口释放后立马被复用
 
     bzero(&server,sizeof(server));  
 
@@ -579,17 +568,22 @@ int  main()
     if(listen(listenfd,BACKLOG) == -1){  /* calls listen() */ 
     perror("listen() error\n"); 
     exit(1); 
-    } 
+    }
 
-    while(1)
-    {
+    // 初始化文件系统（除了User部分）
+    SecondFileKernel::Instance().Initialize();
+    
+    cout << "[info] 等待用户接入..." << endl;
+    // 进入通信循环
+    while(1){
         // accept 
-        if ((connectfd = accept(listenfd,(struct sockaddr *)&client,&sin_size))==-1) {
+        if ((connectfd = accept(listenfd,(struct sockaddr *)&client, (socklen_t*)&sin_size))==-1) {
             perror("accept() error\n"); 
-            exit(1); 
+            exit(1);
         }
         printf("客户端接入：%s\n",inet_ntoa(client.sin_addr) );
-        
+        string str="hello";
+        send(connectfd,str.c_str(),6,0);
         pthread_t thread; //定义一个线程号
         pthread_create(&thread,NULL,start_routine,(void *)&connectfd);
     }

@@ -29,7 +29,20 @@ int SecondFileKernel::Sys_Close(FD fd)
 
     return u.u_ar0[User::EAX];
 }
-
+int SecondFileKernel::Sys_CreatDir(std::string &fpath)
+{
+    int default_mode = 040755;
+    User &u = SecondFileKernel::Instance().GetUser();
+    u.u_error = NOERROR;
+    char filename_char[300];
+    strcpy(filename_char, fpath.c_str());
+    u.u_dirp = filename_char;
+    u.u_arg[1] = default_mode;
+    u.u_arg[2] = 0;
+    FileManager &fimanag = SecondFileKernel::Instance().GetFileManager();
+    fimanag.MkNod();
+    return u.u_ar0[User::EAX];
+}
 int SecondFileKernel::Sys_Creat(std::string &fpath,int mode)
 {
     //模仿系统调用，将参数放入user结构中

@@ -9,7 +9,7 @@
 #include "FileSystem.h"
 #include "BufferManager.h"
 #include "User.h"
-
+#include "UserManager.h"
 
 // 文件开头位置
 #define SYS_SEEK_SET 0
@@ -39,7 +39,9 @@ public:
     BufferManager& GetBufferManager();
     FileSystem& GetFileSystem();
     FileManager& GetFileManager();
+    User& GetSuperUser();
     User& GetUser(); //作为单体实例，单用户时放在这里，多用户时放在线程局部数据中
+    UserManager& GetUserManager();
 
 // Kernel提供的文件系统API
     FD Sys_Open(std::string& fpath,int mode=File::FWRITE);
@@ -50,6 +52,7 @@ public:
     int Sys_Write(FD fd, size_t size, size_t nmemb, void* ptr);
     /*whence : 0 设为offset；1 加offset；2 文件结束位置加offset*/
     int Sys_Seek(FD fd, long int offset, int whence);
+    int Sys_CreatDir(std::string &fpath);
 
 private:
 // Kernel子组件的初始化函数
@@ -67,7 +70,7 @@ private:
     FileSystem*  m_FileSystem;
     FileManager* m_FileManager;
     User* m_User;
-    
+    UserManager* m_UserManager;
 };
 #endif
 

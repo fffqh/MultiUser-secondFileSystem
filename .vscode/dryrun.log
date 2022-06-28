@@ -1,0 +1,18 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/root/SecondFileSystem-bak-627'
+g++ -g -c -Wall  -fpermissive -I./include/ -o objs/server.o server.cpp
+g++ -g -c -Wall  -fpermissive -I./include/ -o objs/SecondFileKernel.o SecondFileKernel.cpp
+g++ -g -c -Wall  -fpermissive -I./include/ -o objs/OpenFileManager.o OpenFileManager.cpp
+g++ -g -c -Wall  -fpermissive -I./include/ -o objs/SecondFileKernelAPI.o SecondFileKernelAPI.cpp
+g++ -g -c -Wall  -fpermissive -I./include/ -o objs/BufferManager.o BufferManager.cpp
+g++ -g -c -Wall  -fpermissive -I./include/ -o objs/FileSystem.o FileSystem.cpp
+g++ -g -c -Wall  -fpermissive -I./include/ -o objs/User.o User.cpp
+g++ -g -c -Wall  -fpermissive -I./include/ -o objs/FileManager.o FileManager.cpp
+g++ -g -c -Wall  -fpermissive -I./include/ -o objs/File.o File.cpp
+g++ -g -c -Wall  -fpermissive -I./include/ -o objs/client.o client.cpp
+g++ -g -c -Wall  -fpermissive -I./include/ -o objs/INode.o INode.cpp
+g++ -g -c -Wall  -fpermissive -I./include/ -o objs/Machine.o Machine.cpp
+g++ -g -c -Wall  -fpermissive -I./include/ -o objs/main_sigle.o main_sigle.cpp
+g++ -g -I./include/ -o secondFileSystem  objs/server.o objs/SecondFileKernel.o objs/OpenFileManager.o objs/SecondFileKernelAPI.o objs/BufferManager.o objs/FileSystem.o objs/User.o objs/FileManager.o objs/File.o objs/client.o objs/INode.o objs/Machine.o objs/main_sigle.o  -lpthread
+make: Leaving directory '/root/SecondFileSystem-bak-627'
+ 

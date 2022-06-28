@@ -1,0 +1,53 @@
+{
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "test", //名称随便取
+            "type": "cppdbg", //调试类型
+            "request": "launch", //请求配置类型，可以为launch（启动）或attach（附加）
+            "program": "${workspaceRoot}/secondFileSystem",
+            "args": [],
+            "cwd": ".",
+            "stopAtEntry": false,
+            "externalConsole": false,
+            "preLaunchTask": "",
+
+            "linux": {
+            	// 生成目标架构，一般为x86或x64，可以为x86, arm, arm64, mips, x64, amd64, x86_64
+                "targetArchitecture": "x64",
+                //可执行程序完整路径（包含程序名称）
+                "program":"${workspaceFolder}/secondFileSystem",
+                //需要调试的应用程序源码路径）
+                "cwd": "${workspaceFolder}", 
+                "environment": [],
+                "preLaunchTask": "Make all", //task 任务名称（与tasks.json中名称一致）
+                "miDebuggerPath": "/usr/bin/gdb", //gdb完整路径
+                "MIMode": "gdb",
+                "setupCommands": [
+                    {
+                        "description": "Enable pretty-printing for gdb",
+                        "text": "-enable-pretty-printing",
+                        "ignoreFailures": true
+                    }
+                ],
+            },
+
+            "windows": {
+                "miDebuggerPath": "D:/MinGW/bin/gdb.exe",
+                "MIMode": "gdb",
+                "setupCommands": [
+                    {
+                        "description": "Enable pretty-printing for gdb",
+                        "text": "-enable-pretty-printing",
+                        "ignoreFailures": true
+                    }
+                ]
+            },
+
+            "osx":{
+                "MIMode": "lldb"
+            }
+        }
+    ]
+}

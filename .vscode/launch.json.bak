@@ -1,0 +1,28 @@
+{
+    "version": "2.0.0", //配置文件的版本，以前使用是0.2.0，新版本已经弃用，改用为2.0.0
+    "configurations": [ //配置域
+        {
+            "name": "(gdb) Launch", //配置文件的名字
+            "type": "cppdbg", //调试的类型,这是cpp
+            "request": "launch", //配置文件的请求类型，有launch和attach两种
+            "targetArchitecture": "x64", //硬件内核架构，为64bit
+            "program": "${workspaceRoot}/secondFileSystem", //将要进行调试的可执行文件的路径和文件名称
+            "args": [], //主函数调用时传入的参数，一般为空
+            "stopAtEntry": false, //设为true时程序将暂停在程序入口处，一般设为false
+            "cwd": "${workspaceFolder}", //调试时的工作目录
+            "environment": [],
+            "internalConsoleOptions": "openOnSessionStart", //
+            "externalConsole": true, //调试时是否显示控制台窗口，一般设置为true
+            "MIMode": "gdb", //指定连接的调试器，可以省略不写
+            "miDebuggerPath": "/usr/bin/gdb",//调试器路径,在Linux环境下需要注释掉这一行
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "make", //调试会话开始前执行的任务，一般为编译程序。与tasks.json的label相对应,一般为编译程序，c++为g++, c为gcc,采用cmake的多文件编译则为build
+        }
+    ]
+}

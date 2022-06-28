@@ -1,0 +1,4 @@
+/objs
+/test
+.ssh
+create_remote.sh

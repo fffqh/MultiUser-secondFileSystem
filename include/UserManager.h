@@ -1,4 +1,3 @@
-// kyf
 #ifndef USERMG_H
 #define USERMG_H
 #define NOERROR 0
@@ -15,7 +14,7 @@ using namespace std;
 class UserManager
 {
 public:
-    static const int USER_N = 100; /* u.u_ar0[EAX]；访问现场保护区中EAX寄存器的偏移量 */
+    static const int USER_N = 100; // 最多支持100个用户同时在线
     UserManager();
     ~UserManager();
     // 用户登录
@@ -29,7 +28,7 @@ public:
     // 一个动态的索引表
     std::map<pthread_t, int> user_addr;
     // 一个User数组
-    User* pusers[USER_N]; // 最多支持20个用户同时在线
+    User* pusers[USER_N]; 
 };
 
 #endif

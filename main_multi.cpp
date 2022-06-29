@@ -69,11 +69,11 @@ void *start_routine( void *ptr)
     int fd = *(int *)ptr;
     char buf[1024];
     int numbytes;
+    numbytes=send(fd,"请输入用户名",sizeof("请输入用户名"),0); 
+    cout << "[info] send函数返回值："  << numbytes << endl;
     //int i,c=0;
     printf("进入用户线程，fd=%d\n", fd);
     memset(buf, 0, sizeof(buf));
-    numbytes=send(fd,"请输入用户名",sizeof("请输入用户名"),0); 
-    cout << "[info] send函数返回值："  << numbytes << endl;
     if ((numbytes=recv(fd,buf,1024,0)) == -1){ 
         cout<<("recv() error\n"); 
         exit(1); 

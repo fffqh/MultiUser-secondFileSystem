@@ -59,6 +59,7 @@ bool UserManager::Login(string uname)
     }
     // 建立pid与addr的关联
     user_addr[pthread_id] = i;
+    pusers[i]->u_uid = 0;
     printf("[INFO] 线程 %llu 登录成功.\n", pthread_id);
     // 设置 User 结构的初始值
     // 1. 关联根目录
@@ -68,6 +69,7 @@ bool UserManager::Login(string uname)
     // 2. 尝试创建家目录
     SecondFileKernel::Instance().Sys_CreatDir(uname);
     // 3. 转到家目录
+    pusers[i]->u_error = NOERROR;
     char dirname[512] = {0};
     strcpy(dirname, uname.c_str());
     pusers[i]->u_dirp = dirname;
@@ -96,6 +98,7 @@ bool UserManager::Logout()
     printf("[INFO] 线程 %d 登出成功.\n", pthread_id);
     return true;
 }
+
 // 得到当前线程的User结构
 User *UserManager::GetUser()
 {

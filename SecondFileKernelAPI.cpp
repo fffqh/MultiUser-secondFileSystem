@@ -34,7 +34,7 @@ int SecondFileKernel::Sys_CreatDir(std::string &fpath)
     int default_mode = 040755;
     User &u = SecondFileKernel::Instance().GetUser();
     u.u_error = NOERROR;
-    char filename_char[300];
+    char filename_char[300]={0};
     strcpy(filename_char, fpath.c_str());
     u.u_dirp = filename_char;
     u.u_arg[1] = default_mode;

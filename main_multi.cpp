@@ -16,10 +16,16 @@
 #include <netinet/in.h> 
 #include <arpa/inet.h>
 #include<pthread.h>
+#include <signal.h>
 #define PORT 1235
 #define BACKLOG 128
 
 using namespace std;
+
+void handle_pipe(int sig)
+{
+//不做任何处理即可
+}
 
 bool isNumber(const string& str)
 {
@@ -53,9 +59,9 @@ private:
     string username;
 public:
     int send_(const stringstream& send_str){
-        cout<<send_str.str()<<endl;
-        int numbytes=send(fd,send_str.str().c_str(),sizeof(send_str.str()),0); 
-        cout<< "["<< username<<"] send numbytes "<<numbytes<<endl;       
+        // cout<<send_str.str()<<endl;
+        int numbytes=send(fd, send_str.str().c_str(), send_str.str().length(), 0); 
+        cout<< "[[ "<< username<<" ]] send "<<numbytes << " bytes" <<endl;       
         return numbytes;
     };
     sendU(int fd,string username){
@@ -69,45 +75,53 @@ void *start_routine( void *ptr)
     int fd = *(int *)ptr;
     char buf[1024];
     int numbytes;
-    numbytes=send(fd,"请输入用户名",sizeof("请输入用户名"),0); 
+    numbytes=send(fd,"请输入用户名：",sizeof("请输入用户名："),0); 
     cout << "[info] send函数返回值："  << numbytes << endl;
-    //int i,c=0;
+
     printf("进入用户线程，fd=%d\n", fd);
+
     memset(buf, 0, sizeof(buf));
     if ((numbytes=recv(fd,buf,1024,0)) == -1){ 
         cout<<("recv() error\n"); 
-        exit(1); 
+        return (void*) NULL;
     }
+
     string username=buf;
     cout << "[info] 用户输入用户名："  << username << endl;
     
     sendU sd(fd,username);
-    sd.send_(print_head());
-    string tipswords="||SecondFileSystem@"+username+"请输入函数名及参数$";
+    //sd.send_(print_head());
 
     // 初始化用户User结构和目录
     SecondFileKernel::Instance().GetUserManager().Login(username);
 
+    string tipswords="||SecondFileSystem@"+username+"请输入函数名及参数$";
     while(true){
-        char buf_recv[1024];
-        numbytes=send(fd,tipswords.c_str(),sizeof(tipswords),0); 
+        char buf_recv[1024]={0};
+        
+        // 发送提示
+        numbytes = send(fd,tipswords.c_str(),tipswords.length(),0); 
         if(numbytes<=0){
             cout<<"[info] 用户 "<<username<<" 断开连接."<<endl;
             SecondFileKernel::Instance().GetUserManager().Logout();
-            exit(1);
+            return (void*)NULL;
         }
+        printf("[INFO] send %d bytes\n", numbytes);
+        
         // 读取用户输入的命令行
-        if ((numbytes=recv(fd,buf_recv,1024,0)) == -1){ 
+        if ((numbytes=recv(fd, buf_recv,1024,0)) == -1){ 
             cout<<"recv() error"<<endl;
             SecondFileKernel::Instance().GetUserManager().Logout();
-            exit(1);
-        } 
+            return (void *)NULL;
+        }
         //解析命令名称
         stringstream ss(buf_recv);
+        cout<<"buf_recv : "<<buf_recv<<endl;
         string api;
         ss>>api;
         stringstream send_str;
-        cout<<"api"<<api<<endl;
+
+        cout<<"api : "<< api << endl;
         if(api == "cd"){
             string param1;
             ss >> param1;
@@ -131,24 +145,23 @@ void *start_routine( void *ptr)
             sd.send_(send_str);
             continue;
         }
-        
         if(api == "ls"){
 			User &u=SecondFileKernel::Instance().GetUser();
 			u.u_error=NOERROR;
 			string cur_path=u.u_curdir;
 			FD fd = SecondFileKernel::Instance().Sys_Open(cur_path,(File::FREAD));
-            send_str <<"fd:" <<fd<< "cur_path:" << cur_path << endl;
+            send_str <<"fd:" <<fd<< " cur_path:" << cur_path << endl;
             char buf[33]={0};
 			while(1){
 				if(SecondFileKernel::Instance().Sys_Read(fd, 32, 33, buf)==0)
 					break;
 				else{
-                    send_str << "cur_path:" << cur_path << endl << "buf:" << buf;
+                    // send_str << "cur_path:" << cur_path << endl << "buf:" << buf;
 					DirectoryEntry *mm=(DirectoryEntry*)buf;
 					// m_ino是啥时候赋值的？？
 					if(mm->m_ino==0)
 						continue;
-					send_str << "======" << mm->m_name << "======" << endl;
+					send_str << "====== " << mm->m_name << " ======" << endl;
 					memset(buf, 0, 32);
 				}
 			}
@@ -156,7 +169,6 @@ void *start_routine( void *ptr)
             sd.send_(send_str);
             continue;
         }
-
         if(api == "mkdir"){
             string path;
             ss >> path;
@@ -171,7 +183,6 @@ void *start_routine( void *ptr)
             sd.send_(send_str);
             continue;
         }
-        
         if(api == "mkfile"){
             string filename;
             ss >> filename;
@@ -541,6 +552,7 @@ void *start_routine( void *ptr)
             sd.send_(send_str);
             break;
         }
+    
     }
 
     close(fd);
@@ -549,6 +561,14 @@ void *start_routine( void *ptr)
 
 int main()
 { 
+
+    // 进行信号处理
+    struct sigaction action;
+    action.sa_handler = handle_pipe;
+    sigemptyset(&action.sa_mask);
+    action.sa_flags = 0;
+    sigaction(SIGPIPE, &action, NULL);
+
     int listenfd, connectfd;    
     struct sockaddr_in server;
     struct sockaddr_in client;      
@@ -582,7 +602,7 @@ int main()
     exit(1); 
     }
 
-    // 初始化文件系统（除了User部分）
+    // 初始化文件系统
     SecondFileKernel::Instance().Initialize();
     
     cout << "[info] 等待用户接入..." << endl;
@@ -591,11 +611,11 @@ int main()
         // accept 
         if ((connectfd = accept(listenfd,(struct sockaddr *)&client, (socklen_t*)&sin_size))==-1) {
             perror("accept() error\n"); 
-            exit(1);
+            continue;
         }
         printf("客户端接入：%s\n",inet_ntoa(client.sin_addr) );
         string str="hello";
-        send(connectfd,str.c_str(),6,0);
+        //send(connectfd,str.c_str(),6,0);
         pthread_t thread; //定义一个线程号
         pthread_create(&thread,NULL,start_routine,(void *)&connectfd);
     }

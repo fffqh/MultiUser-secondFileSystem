@@ -556,6 +556,7 @@ void *start_routine( void *ptr)
     }
 
     close(fd);
+    return (void*)NULL;
 }
 
 

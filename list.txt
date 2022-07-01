@@ -1,0 +1,30 @@
+SecondFileSystem-MultiUser
+├── BufferManager.cpp                    //BufferManager类
+├── File.cpp                             //File类
+├── FileManager.cpp                      //FileManager类
+├── FileSystem.cpp                       //FileSystem类
+├── INode.cpp                            //INode类
+├── Machine.cpp                          //Machine类（用于初始化磁盘文件等）
+├── OpenFileManager.cpp                  //OpenFileManager类
+├── SecondFileKernel.cpp                 //SecondFileKernel类
+├── SecondFileKernelAPI.cpp              //SecondFileKernel类中的API函数实现
+├── User.cpp                             //User类
+├── UserManager.cpp                      //UserManager类
+├── c.img                                //磁盘模拟文件
+├── client                               //客户端可执行文件
+├── include                              //项目头文件
+│   ├── Buf.h
+│   ├── BufferManager.h
+│   ├── File.h
+│   ├── FileManager.h
+│   ├── FileSystem.h
+│   ├── INode.h
+│   ├── Machine.h
+│   ├── OpenFileManager.h
+│   ├── SecondFileKernel.h
+│   ├── User.h
+│   └── UserManager.h
+├── main_multi.cpp                       //多用户main函数文件
+├── makefile                             //Makefile文件 
+└── secondFileSystem                     //文件系统可执行文件
+

@@ -90,7 +90,7 @@ void *start_routine( void *ptr)
     cout << "[info] 用户输入用户名："  << username << endl;
     
     sendU sd(fd,username);
-    //sd.send_(print_head());
+    sd.send_(print_head());
 
     // 初始化用户User结构和目录
     SecondFileKernel::Instance().GetUserManager().Login(username);
@@ -158,7 +158,6 @@ void *start_routine( void *ptr)
 				else{
                     // send_str << "cur_path:" << cur_path << endl << "buf:" << buf;
 					DirectoryEntry *mm=(DirectoryEntry*)buf;
-					// m_ino是啥时候赋值的？？
 					if(mm->m_ino==0)
 						continue;
 					send_str << "====== " << mm->m_name << " ======" << endl;
@@ -499,16 +498,15 @@ void *start_routine( void *ptr)
                 sd.send_(send_str);
                 continue;
             }
-            // 打开外部文件
-            int ofd = open(p2_ofpath.c_str(), O_WRONLY| O_TRUNC); //截断写入方式打开外部文件
+            // 创建外部文件
+            int ofd = open(p2_ofpath.c_str(), O_WRONLY| O_TRUNC | O_CREAT); //截断写入方式打开外部文件
             if (ofd < 0)
             {
                 send_str << "[ERROR] 创建文件失败：" << p2_ofpath << endl;
                 sd.send_(send_str);
                 continue;
             }
-            // 创建内部文件
-            SecondFileKernel::Instance().Sys_Creat(p1_ifpath, 0x1|0x2);
+            // 打开内部文件
             int ifd = SecondFileKernel::Instance().Sys_Open(p1_ifpath, 0x1 | 0x2);
             if (ifd < 0)
             {
@@ -552,7 +550,12 @@ void *start_routine( void *ptr)
             sd.send_(send_str);
             break;
         }
-    
+        if(api != "" && api != " "){
+            stringstream tishi;
+            tishi = print_head();
+            tishi << "\n" << "温馨提示：您的指令错误！\n";
+            sd.send_(tishi);
+        }
     }
 
     close(fd);
@@ -584,28 +587,22 @@ int main()
 
     int opt = SO_REUSEADDR;
     setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)); //使得端口释放后立马被复用
-
     bzero(&server,sizeof(server));  
-
     server.sin_family=AF_INET; 
     server.sin_port=htons(PORT); 
     server.sin_addr.s_addr = htonl (INADDR_ANY); 
-
     // 绑定
     if (bind(listenfd, (struct sockaddr *)&server, sizeof(struct sockaddr)) == -1) { 
-    perror("Bind error.");
-    exit(1); 
+        perror("Bind error.");
+        exit(1); 
     }   
-
     // 监听 
     if(listen(listenfd,BACKLOG) == -1){  /* calls listen() */ 
-    perror("listen() error\n"); 
-    exit(1); 
+        perror("listen() error\n"); 
+        exit(1); 
     }
-
     // 初始化文件系统
     SecondFileKernel::Instance().Initialize();
-    
     cout << "[info] 等待用户接入..." << endl;
     // 进入通信循环
     while(1){

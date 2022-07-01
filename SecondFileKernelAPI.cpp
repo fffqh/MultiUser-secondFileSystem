@@ -98,7 +98,7 @@ int SecondFileKernel::Sys_Write(FD fd, size_t size, size_t nmemb, void *ptr)
     User& u = SecondFileKernel::Instance().GetUser();
 
     u.u_arg[0] = fd;
-    u.u_arg[1] = (long long)ptr;
+    u.u_arg[1] = (unsigned long long)ptr;
     u.u_arg[2] = size;
 
     FileManager& fileMgr = SecondFileKernel::Instance().GetFileManager();

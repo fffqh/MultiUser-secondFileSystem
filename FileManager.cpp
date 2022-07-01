@@ -78,16 +78,16 @@ void FileManager::Creat()
 	}
 	else
 	{
+
+		this->Open1(pInode, File::FWRITE, 1);
+		pInode->i_mode |= newACCMode;
+	}
+}
 		/* 如果NameI()搜索到已经存在要创建的文件，则清空该文件（用算法ITrunc()）。UID没有改变
 		 * 原来UNIX的设计是这样：文件看上去就像新建的文件一样。然而，新文件所有者和许可权方式没变。
 		 * 也就是说creat指定的RWX比特无效。
 		 * 邓蓉认为这是不合理的，应该改变。
 		 * 现在的实现：creat指定的RWX比特有效 */
-		this->Open1(pInode, File::FWRITE, 1);
-		pInode->i_mode |= newACCMode;
-	}
-}
-
 /* 
 * trf == 0由open调用
 * trf == 1由creat调用，creat文件的时候搜索到同文件名的文件
@@ -97,7 +97,6 @@ void FileManager::Creat()
 void FileManager::Open1(Inode* pInode, int mode, int trf)
 {
 	User& u = SecondFileKernel::Instance().GetUser();
-
 	/* 
 	 * 对所希望的文件已存在的情况下，即trf == 0或trf == 1进行权限检查
 	 * 如果所希望的名字不存在，即trf == 2，不需要进行权限检查，因为刚建立
@@ -121,27 +120,23 @@ void FileManager::Open1(Inode* pInode, int mode, int trf)
 			}
 		}
 	}
-
 	if ( u.u_error )
 	{
 		cout<<"u_error in Open1"<<endl;
 		this->m_InodeTable->IPut(pInode);
 		return;
 	}
-
 	/* 在creat文件的时候搜索到同文件名的文件，释放该文件所占据的所有盘块 */
 	if ( 1 == trf )
 	{
 		pInode->ITrunc();
 	}
-
 	/* 解锁inode! 
 	 * 线性目录搜索涉及大量的磁盘读写操作，期间进程会入睡。
 	 * 因此，进程必须上锁操作涉及的i节点。这就是NameI中执行的IGet上锁操作。
 	 * 行至此，后续不再有可能会引起进程切换的操作，可以解锁i节点。
 	 */
 	pInode->NFrele();
-
 	/* 分配打开文件控制块File结构 */
 	File* pFile = this->m_OpenFileTable->FAlloc();
 	if ( NULL == pFile )
@@ -152,10 +147,8 @@ void FileManager::Open1(Inode* pInode, int mode, int trf)
 	/* 设置打开文件方式，建立File结构和内存Inode的勾连关系 */
 	pFile->f_flag = mode & (File::FREAD | File::FWRITE);
 	pFile->f_inode = pInode;
-
 	/* 特殊设备打开函数 */
 	//pInode->OpenI(mode & File::FWRITE);
-
 	/* 为打开或者创建文件的各种资源都已成功分配，函数返回 */
 	if ( u.u_error == 0 )
 	{

@@ -5,9 +5,8 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
- 
 
-# Make data base, printed on Wed Jun 29 14:04:00 2022
+# Make data base, printed on Fri Jul  1 08:46:06 2022
 
 # Variables
 
@@ -54,7 +53,7 @@ LESSOPEN = | /usr/bin/lesspipe %s
 # environment
 VSCODE_CWD = /root
 # environment
-SSH_CONNECTION = 140.243.175.209 12168 172.17.188.126 22
+SSH_CONNECTION = 183.252.144.76 17038 172.17.188.126 22
 # environment
 PATH = /root/.vscode-server/bin/30d9c6cd9483b2cc586687151bcbcd635f373630/bin/remote-cli:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 # environment
@@ -62,7 +61,7 @@ XDG_RUNTIME_DIR = /run/user/0
 # environment
 VSCODE_LOG_STACK = false
 # environment
-VSCODE_IPC_HOOK_CLI = /run/user/0/vscode-ipc-2dd1866b-e478-4faf-9984-01661e129cb7.sock
+VSCODE_IPC_HOOK_CLI = /run/user/0/vscode-ipc-100634f2-36ed-4f8a-8619-50c65f254a3f.sock
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
 # environment
@@ -110,7 +109,7 @@ CC = g++ -g
 # makefile (from 'makefile', line 7)
 SOURCE = $(wildcard *.cpp)
 # environment
-XDG_SESSION_ID = 1269
+XDG_SESSION_ID = 1657
 # environment
 USER = root
 # makefile
@@ -130,7 +129,7 @@ MAKEFLAGS = pqrR
 # environment
 MFLAGS = -pqrR
 # environment
-SSH_CLIENT = 140.243.175.209 12168 22
+SSH_CLIENT = 183.252.144.76 17038 22
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
 # environment
@@ -164,7 +163,7 @@ VSCODE_EXTHOST_WILL_SEND_SOCKET = true
 # environment
 MOTD_SHOWN = pam
 # variable set hash-table stats:
-# Load=76/1024=7%, Rehash=0, Collisions=11/112=10%
+# Load=76/1024=7%, Rehash=0, Collisions=11/118=9%
 
 # Pattern-specific Variable Values
 
@@ -192,14 +191,12 @@ include/UserManager.h:
 
 # Not a target:
 File.cpp:
-#  Implicit rule search has been done.
-#  Last modified 2022-06-28 17:46:09.115407301
-#  File has been updated.
-#  Successfully updated.
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
 
 # Not a target:
 include/SecondFileKernel.h:
- 
 #  Implicit rule search has been done.
 #  Last modified 2022-06-29 01:10:57.549353988
 #  File has been updated.
@@ -218,16 +215,17 @@ all: secondFileSystem
 #  Implicit rule search has not been done.
 #  File does not exist.
 #  File has been updated.
-#  Successfully updated.
+#  Needs to be updated (-q is set).
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/6=0%
 #  recipe to execute (from 'makefile', line 14):
 	
 
 # Not a target:
 BufferManager.cpp:
-#  Implicit rule search has been done.
-#  Last modified 2022-06-29 01:42:25.685496983
-#  File has been updated.
-#  Successfully updated.
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
 
 .PHONY: all clean
 #  Implicit rule search has not been done.
@@ -238,23 +236,75 @@ BufferManager.cpp:
 include/INode.h:
 #  Implicit rule search has been done.
 #  Last modified 2022-06-28 17:46:09.123407371
+ 
 #  File has been updated.
+ 
 #  Successfully updated.
+ 
 
+ 
 # Not a target:
+ 
 FileManager.cpp:
-#  Implicit rule search has been done.
-#  Last modified 2022-06-28 17:46:09.115407301
-#  File has been updated.
-#  Successfully updated.
-
-objs/main_multi.o: main_multi.cpp include/Buf.h include/UserManager.h include/File.h include/INode.h include/FileManager.h include/Machine.h include/BufferManager.h include/OpenFileManager.h include/SecondFileKernel.h include/FileSystem.h include/User.h
+ 
 #  Implicit rule search has not been done.
+ 
+#  Modification time never checked.
+ 
+#  File has not been updated.
+ 
+
+ 
+objs/main_multi.o: main_multi.cpp include/Buf.h include/UserManager.h include/File.h include/INode.h include/FileManager.h include/Machine.h include/BufferManager.h include/OpenFileManager.h include/SecondFileKernel.h include/FileSystem.h include/User.h
+ 
+#  Implicit rule search has not been done.
+ 
 #  Implicit/static pattern stem: 'main_multi'
-#  Last modified 2022-06-29 10:43:55.320469786
+ 
+#  Last modified 2022-06-30 20:58:55.05891396
+ 
 #  File has been updated.
-#  Successfully updated.
+ 
+#  Needs to be updated (-q is set).
+ 
+# automatic
+ 
+# @ := objs/main_multi.o
+ 
+# automatic
+ 
+# % := 
+ 
+# automatic
+ 
+# * := main_multi
+ 
+# automatic
+ 
+# + := main_multi.cpp include/Buf.h include/UserManager.h include/File.h include/INode.h include/FileManager.h include/Machine.h include/BufferManager.h include/OpenFileManager.h include/SecondFileKernel.h include/FileSystem.h include/User.h
+ 
+# automatic
+ 
+# | := 
+ 
+# automatic
+ 
+# < := main_multi.cpp
+ 
+# automatic
+ 
+# ^ := main_multi.cpp include/Buf.h include/UserManager.h include/File.h include/INode.h include/FileManager.h include/Machine.h include/BufferManager.h include/OpenFileManager.h include/SecondFileKernel.h include/FileSystem.h include/User.h
+ 
+# automatic
+ 
+# ? := main_multi.cpp
+ 
+# variable set hash-table stats:
+ 
+# Load=8/32=25%, Rehash=0, Collisions=3/16=19%
+ 
 #  recipe to execute (from 'makefile', line 22):
+ 
 	$(CC) $(CFLAG) -I$(INC_PATH) -o $@ $<
 
 # Not a target:
@@ -267,25 +317,22 @@ include/FileManager.h:
 objs/OpenFileManager.o: OpenFileManager.cpp include/Buf.h include/UserManager.h include/File.h include/INode.h include/FileManager.h include/Machine.h include/BufferManager.h include/OpenFileManager.h include/SecondFileKernel.h include/FileSystem.h include/User.h
 #  Implicit rule search has not been done.
 #  Implicit/static pattern stem: 'OpenFileManager'
-#  Last modified 2022-06-29 09:25:21.791920622
-#  File has been updated.
-#  Successfully updated.
+#  Modification time never checked.
+#  File has not been updated.
 #  recipe to execute (from 'makefile', line 22):
 	$(CC) $(CFLAG) -I$(INC_PATH) -o $@ $<
 
 # Not a target:
 User.cpp:
-#  Implicit rule search has been done.
-#  Last modified 2022-06-28 17:46:09.119407336
-#  File has been updated.
-#  Successfully updated.
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
 
 objs/FileSystem.o: FileSystem.cpp include/Buf.h include/UserManager.h include/File.h include/INode.h include/FileManager.h include/Machine.h include/BufferManager.h include/OpenFileManager.h include/SecondFileKernel.h include/FileSystem.h include/User.h
 #  Implicit rule search has not been done.
 #  Implicit/static pattern stem: 'FileSystem'
-#  Last modified 2022-06-29 09:25:23.151932316
-#  File has been updated.
-#  Successfully updated.
+#  Modification time never checked.
+#  File has not been updated.
 #  recipe to execute (from 'makefile', line 22):
 	$(CC) $(CFLAG) -I$(INC_PATH) -o $@ $<
 
@@ -312,56 +359,53 @@ include/BufferManager.h:
 
 # Not a target:
 UserManager.cpp:
-#  Implicit rule search has been done.
-#  Last modified 2022-06-29 10:20:43.932500345
-#  File has been updated.
-#  Successfully updated.
- 
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
 
 objs/Machine.o: Machine.cpp include/Buf.h include/UserManager.h include/File.h include/INode.h include/FileManager.h include/Machine.h include/BufferManager.h include/OpenFileManager.h include/SecondFileKernel.h include/FileSystem.h include/User.h
 #  Implicit rule search has not been done.
 #  Implicit/static pattern stem: 'Machine'
-#  Last modified 2022-06-29 09:25:26.155958145
-#  File has been updated.
-#  Successfully updated.
+#  Modification time never checked.
+#  File has not been updated.
 #  recipe to execute (from 'makefile', line 22):
 	$(CC) $(CFLAG) -I$(INC_PATH) -o $@ $<
 
 # Not a target:
 main_multi.cpp:
 #  Implicit rule search has been done.
-#  Last modified 2022-06-29 10:43:44.812379408
+#  Last modified 2022-07-01 00:44:03.034755704
 #  File has been updated.
 #  Successfully updated.
 
 secondFileSystem: objs/SecondFileKernel.o objs/main_multi.o objs/OpenFileManager.o objs/SecondFileKernelAPI.o objs/BufferManager.o objs/FileSystem.o objs/User.o objs/UserManager.o objs/FileManager.o objs/File.o objs/INode.o objs/Machine.o
 #  Implicit rule search has not been done.
-#  Last modified 2022-06-29 10:43:55.416470611
+#  Last modified 2022-06-30 20:58:56.106922948
 #  File has been updated.
-#  Successfully updated.
+#  Needs to be updated (-q is set).
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/6=0%
 #  recipe to execute (from 'makefile', line 17):
 	$(CC) -I$(INC_PATH) -o $@  $^  -lpthread
 
 objs/User.o: User.cpp include/Buf.h include/UserManager.h include/File.h include/INode.h include/FileManager.h include/Machine.h include/BufferManager.h include/OpenFileManager.h include/SecondFileKernel.h include/FileSystem.h include/User.h
 #  Implicit rule search has not been done.
 #  Implicit/static pattern stem: 'User'
-#  Last modified 2022-06-29 09:25:23.587936064
-#  File has been updated.
-#  Successfully updated.
+#  Modification time never checked.
+#  File has not been updated.
 #  recipe to execute (from 'makefile', line 22):
 	$(CC) $(CFLAG) -I$(INC_PATH) -o $@ $<
 
 # Not a target:
 INode.cpp:
-#  Implicit rule search has been done.
-#  Last modified 2022-06-28 17:46:09.119407336
-#  File has been updated.
-#  Successfully updated.
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
 
 # Not a target:
 SecondFileKernel.cpp:
 #  Implicit rule search has been done.
-#  Last modified 2022-06-29 01:56:32.680780725
+#  Last modified 2022-06-30 15:12:52.70462837
 #  File has been updated.
 #  Successfully updated.
 
@@ -374,23 +418,21 @@ SecondFileKernel.cpp:
 objs/UserManager.o: UserManager.cpp include/Buf.h include/UserManager.h include/File.h include/INode.h include/FileManager.h include/Machine.h include/BufferManager.h include/OpenFileManager.h include/SecondFileKernel.h include/FileSystem.h include/User.h
 #  Implicit rule search has not been done.
 #  Implicit/static pattern stem: 'UserManager'
-#  Last modified 2022-06-29 10:23:46.162068299
-#  File has been updated.
-#  Successfully updated.
+#  Modification time never checked.
+#  File has not been updated.
 #  recipe to execute (from 'makefile', line 22):
 	$(CC) $(CFLAG) -I$(INC_PATH) -o $@ $<
 
 # Not a target:
 OpenFileManager.cpp:
-#  Implicit rule search has been done.
-#  Last modified 2022-06-28 17:46:09.119407336
-#  File has been updated.
-#  Successfully updated.
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
 
 objs/SecondFileKernel.o: SecondFileKernel.cpp include/Buf.h include/UserManager.h include/File.h include/INode.h include/FileManager.h include/Machine.h include/BufferManager.h include/OpenFileManager.h include/SecondFileKernel.h include/FileSystem.h include/User.h
 #  Implicit rule search has not been done.
 #  Implicit/static pattern stem: 'SecondFileKernel'
-#  Last modified 2022-06-29 09:25:20.52390972
+#  Last modified 2022-06-30 20:58:54.454908779
 #  File has been updated.
 #  Successfully updated.
 #  recipe to execute (from 'makefile', line 22):
@@ -407,18 +449,16 @@ clean:
 objs/File.o: File.cpp include/Buf.h include/UserManager.h include/File.h include/INode.h include/FileManager.h include/Machine.h include/BufferManager.h include/OpenFileManager.h include/SecondFileKernel.h include/FileSystem.h include/User.h
 #  Implicit rule search has not been done.
 #  Implicit/static pattern stem: 'File'
-#  Last modified 2022-06-29 09:25:25.171949684
-#  File has been updated.
-#  Successfully updated.
+#  Modification time never checked.
+#  File has not been updated.
 #  recipe to execute (from 'makefile', line 22):
 	$(CC) $(CFLAG) -I$(INC_PATH) -o $@ $<
 
 # Not a target:
 FileSystem.cpp:
-#  Implicit rule search has been done.
-#  Last modified 2022-06-28 17:46:09.115407301
-#  File has been updated.
-#  Successfully updated.
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
 
 # Not a target:
 include/OpenFileManager.h:
@@ -430,10 +470,8 @@ include/OpenFileManager.h:
 objs/INode.o: INode.cpp include/Buf.h include/UserManager.h include/File.h include/INode.h include/FileManager.h include/Machine.h include/BufferManager.h include/OpenFileManager.h include/SecondFileKernel.h include/FileSystem.h include/User.h
 #  Implicit rule search has not been done.
 #  Implicit/static pattern stem: 'INode'
- 
-#  Last modified 2022-06-29 09:25:25.679954052
-#  File has been updated.
-#  Successfully updated.
+#  Modification time never checked.
+#  File has not been updated.
 #  recipe to execute (from 'makefile', line 22):
 	$(CC) $(CFLAG) -I$(INC_PATH) -o $@ $<
 
@@ -446,26 +484,23 @@ include/FileSystem.h:
 
 # Not a target:
 Machine.cpp:
-#  Implicit rule search has been done.
-#  Last modified 2022-06-28 17:46:09.119407336
-#  File has been updated.
-#  Successfully updated.
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
 
 objs/FileManager.o: FileManager.cpp include/Buf.h include/UserManager.h include/File.h include/INode.h include/FileManager.h include/Machine.h include/BufferManager.h include/OpenFileManager.h include/SecondFileKernel.h include/FileSystem.h include/User.h
 #  Implicit rule search has not been done.
 #  Implicit/static pattern stem: 'FileManager'
-#  Last modified 2022-06-29 09:25:24.651945213
-#  File has been updated.
-#  Successfully updated.
+#  Modification time never checked.
+#  File has not been updated.
 #  recipe to execute (from 'makefile', line 22):
 	$(CC) $(CFLAG) -I$(INC_PATH) -o $@ $<
 
 # Not a target:
 SecondFileKernelAPI.cpp:
-#  Implicit rule search has been done.
-#  Last modified 2022-06-29 10:07:42.665777519
-#  File has been updated.
-#  Successfully updated.
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
 
 # Not a target:
 include/Machine.h:
@@ -484,18 +519,16 @@ include/User.h:
 objs/SecondFileKernelAPI.o: SecondFileKernelAPI.cpp include/Buf.h include/UserManager.h include/File.h include/INode.h include/FileManager.h include/Machine.h include/BufferManager.h include/OpenFileManager.h include/SecondFileKernel.h include/FileSystem.h include/User.h
 #  Implicit rule search has not been done.
 #  Implicit/static pattern stem: 'SecondFileKernelAPI'
-#  Last modified 2022-06-29 10:23:45.586063343
-#  File has been updated.
-#  Successfully updated.
+#  Modification time never checked.
+#  File has not been updated.
 #  recipe to execute (from 'makefile', line 22):
 	$(CC) $(CFLAG) -I$(INC_PATH) -o $@ $<
 
 objs/BufferManager.o: BufferManager.cpp include/Buf.h include/UserManager.h include/File.h include/INode.h include/FileManager.h include/Machine.h include/BufferManager.h include/OpenFileManager.h include/SecondFileKernel.h include/FileSystem.h include/User.h
 #  Implicit rule search has not been done.
 #  Implicit/static pattern stem: 'BufferManager'
-#  Last modified 2022-06-29 09:25:22.699928429
-#  File has been updated.
-#  Successfully updated.
+#  Modification time never checked.
+#  File has not been updated.
 #  recipe to execute (from 'makefile', line 22):
 	$(CC) $(CFLAG) -I$(INC_PATH) -o $@ $<
 
@@ -507,12 +540,12 @@ objs/BufferManager.o: BufferManager.cpp include/Buf.h include/UserManager.h incl
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 83 / storage = 1103 B / avg = 13 B
-# current buf: size = 8162 B / used = 1103 B / count = 83 / avg = 13 B
+# strcache buffers: 1 (0) / strings = 83 / storage = 1106 B / avg = 13 B
+# current buf: size = 8162 B / used = 1106 B / count = 83 / avg = 13 B
 
 # strcache performance: lookups = 134 / hit rate = 38%
 # hash-table stats:
 # Load=83/8192=1%, Rehash=0, Collisions=2/134=1%
-# Finished Make data base on Wed Jun 29 14:04:00 2022
+# Finished Make data base on Fri Jul  1 08:46:06 2022
 
  

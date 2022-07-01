@@ -55,16 +55,12 @@ void Inode::ReadI()
 	Buf* pBuf;
 	User& u = SecondFileKernel::Instance().GetUser();
 	BufferManager& bufMgr = SecondFileKernel::Instance().GetBufferManager();
-
 	if( 0 == u.u_IOParam.m_Count )
 	{
 		/* 需要读字节数为零，则返回 */
 		return;
 	}
-
 	this->i_flag |= Inode::IACC;
-
-
 	/* 一次一个字符块地读入所需全部数据，直至遇到文件尾 */
 	while(NOERROR == u.u_error && u.u_IOParam.m_Count != 0)
 	{
@@ -72,10 +68,7 @@ void Inode::ReadI()
 		offset = u.u_IOParam.m_Offset % Inode::BLOCK_SIZE;
 		/* 传送到用户区的字节数量，取读请求的剩余字节数与当前字符块内有效字节数较小值 */
 		nbytes = std::min(Inode::BLOCK_SIZE - offset /* 块内有效字节数 */, u.u_IOParam.m_Count);
-
-	
 		/* 如果不是特殊块设备文件 */
-		
 		int remain = this->i_size - u.u_IOParam.m_Offset;
 		/* 如果已读到超过文件结尾 */
 		if( remain <= 0)
@@ -84,7 +77,6 @@ void Inode::ReadI()
 		}
 		/* 传送的字节数量还取决于剩余文件的长度 */
 		nbytes = std::min(nbytes, remain);
-
 		/* 将逻辑块号lbn转换成物理盘块号bn ，Bmap有设置Inode::rablock。当UNIX认为获取预读块的开销太大时，
 			* 会放弃预读，此时 Inode::rablock 值为 0。
 			* */
@@ -92,34 +84,19 @@ void Inode::ReadI()
 		{
 			return;
 		}
-		//dev = this->i_dev;
-	
-
-		// if( this->i_lastr + 1 == lbn )	/* 如果是顺序读，则进行预读 */
-		// {
-		// 	/* 读当前块，并预读下一块 */
-		// 	pBuf = bufMgr.Breada(dev, bn, Inode::rablock);
-		// }
-		// else
-		// {
 		pBuf = bufMgr.Bread(bn);
-		// }
 		/* 记录最近读取字符块的逻辑块号 */
 		this->i_lastr = lbn;
-
 		/* 缓存中数据起始读位置 */
 		unsigned char* start = pBuf->b_addr + offset;
-		
 		/* 读操作: 从缓冲区拷贝到用户目标区
 		 * i386芯片用同一张页表映射用户空间和内核空间，这一点硬件上的差异 使得i386上实现 iomove操作
 		 * 比PDP-11要容易许多*/
 		memcpy( u.u_IOParam.m_Base, start, nbytes);
-
 		/* 用传送字节数nbytes更新读写位置 */
 		u.u_IOParam.m_Base += nbytes;
 		u.u_IOParam.m_Offset += nbytes;
 		u.u_IOParam.m_Count -= nbytes;
-
 		bufMgr.Brelse(pBuf);	/* 使用完缓存，释放该资源 */
 	}
 }
@@ -135,34 +112,25 @@ void Inode::WriteI()
 	Buf* pBuf;
 	User& u = SecondFileKernel::Instance().GetUser();
 	BufferManager& bufMgr = SecondFileKernel::Instance().GetBufferManager();
-
-
 	/* 设置Inode被访问标志位 */
 	this->i_flag |= (Inode::IACC | Inode::IUPD);
-
-
 	if( 0 == u.u_IOParam.m_Count)
 	{
 		/* 需要读字节数为零，则返回 */
 		return;
 	}
-
 	while(NOERROR == u.u_error && u.u_IOParam.m_Count != 0 )
 	{
 		lbn = u.u_IOParam.m_Offset / Inode::BLOCK_SIZE;
 		offset = u.u_IOParam.m_Offset % Inode::BLOCK_SIZE;
 		nbytes = std::min(Inode::BLOCK_SIZE - offset, u.u_IOParam.m_Count);
-
 		/* 普通文件 */
-
 		/* 将逻辑块号lbn转换成物理盘块号bn */
 		if( (bn = this->Bmap(lbn)) == 0 )
 		{
 			return;
 		}
 		//dev = this->i_dev;
-		
-
 		if(Inode::BLOCK_SIZE == nbytes)
 		{
 			/* 如果写入数据正好满一个字符块，则为其分配缓存 */
@@ -173,18 +141,14 @@ void Inode::WriteI()
 			/* 写入数据不满一个字符块，先读后写（读出该字符块以保护不需要重写的数据） */
 			pBuf = bufMgr.Bread(bn);
 		}
-
 		/* 缓存中数据的起始写位置 */
 		unsigned char* start = pBuf->b_addr + offset;
-
 		/* 写操作: 从用户目标区拷贝数据到缓冲区 */
 		memcpy(start, u.u_IOParam.m_Base,  nbytes);
-
 		/* 用传送字节数nbytes更新读写位置 */
 		u.u_IOParam.m_Base += nbytes;
 		u.u_IOParam.m_Offset += nbytes;
 		u.u_IOParam.m_Count -= nbytes;
-
 		if( u.u_error !=NOERROR )	/* 写过程中出错 */
 		{
 		    cout<<"u_error in WriteI"<<endl;
@@ -200,13 +164,11 @@ void Inode::WriteI()
 			/* 将缓存标记为延迟写，不急于进行I/O操作将字符块输出到磁盘上 */
 			bufMgr.Bdwrite(pBuf);
 		}
-
 		/* 普通文件长度增加 */
 		if( (this->i_size < u.u_IOParam.m_Offset))
 		{
 			this->i_size = u.u_IOParam.m_Offset;
 		}
-
 		/* 
 		 * 之前过程中读盘可能导致进程切换，在进程睡眠期间当前内存Inode可能
 		 * 被同步到外存Inode，在此需要重新设置更新标志位。
@@ -245,6 +207,7 @@ int Inode::Bmap(int lbn)
 	if(lbn >= Inode::HUGE_FILE_BLOCK)
 	{
 		u.u_error =EFBIG;
+		printf("[ERROR] 文件过大，无法存储.\n");
 		return 0;
 	}
 

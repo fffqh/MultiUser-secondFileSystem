@@ -63,27 +63,40 @@ Buf* BufferManager::GetBlk(int blkno){
 		//cout << "在缓存队列中找到对应的缓存，置为busy，GetBlk返回 blkno=" <<blkno<< endl;
 		return bp;
 	}
-	// 没有 到队头找
-	bp = this->bFreeList.b_forw;
+
+	// 没有到队头找
+	//bp = headbp->b_forw;
+	int success = false;
+	for (bp = headbp->b_forw; bp != headbp; bp = bp->b_forw)
+	{
+		// 检查该buf是否上锁
+		if(pthread_mutex_trylock(&bp->buf_lock)==0){
+			success = true;
+			break;
+		}
+		printf("[DEBUG] buf已被锁，blkno=%d b_addr=%p\n", bp->b_blkno, bp->b_addr);
+	}
+	if(success == false){
+		bp = headbp->b_forw;
+		printf("[INFO]系统缓存已用完，等待队首缓存解锁...\n");
+		pthread_mutex_lock(&bp->buf_lock); // 等待第一个缓存块解锁。
+		printf("[INFO]系统成功得到队首缓存块...\n");
+	}
 	if (bp->b_flags&Buf::B_DELWRI)
 	{
-		// 如果有多西了，先写回
-		//	cout << "分配到有延迟写标记的缓存，将执行Bwrite" << endl;
-		//注：有延迟写标志，在这里直接写，不做异步IO的标志
-		this->Bwrite(bp);
+		this->Bwrite(bp);                  // 写回磁盘，并解锁
+		pthread_mutex_lock(&bp->buf_lock); // 马上上锁
 	}
-	// Busy（锁
 	//注：这里清空了其他所有的标志，只置为busy
 	bp->b_flags = Buf::B_BUSY;
-	pthread_mutex_lock(&bp->buf_lock);
 	//注：我这里的操作是将头节点变成尾节点
-	bp->b_back->b_forw = bp->b_forw;
-	bp->b_forw->b_back = bp->b_back;
+	// bp->b_back->b_forw = bp->b_forw;
+	// bp->b_forw->b_back = bp->b_back;
 
-	bp->b_back = this->bFreeList.b_back->b_forw;
-	this->bFreeList.b_back->b_forw = bp;
-	bp->b_forw = &this->bFreeList;
-	this->bFreeList.b_back = bp;
+	// bp->b_back = this->bFreeList.b_back->b_forw;
+	// this->bFreeList.b_back->b_forw = bp;
+	// bp->b_forw = &this->bFreeList;
+	// this->bFreeList.b_back = bp;
 
 	bp->b_blkno = blkno;
 //	cout << "成功分配到可用的缓存，getBlk将成功返回" << endl;
@@ -99,6 +112,7 @@ void BufferManager::Brelse(Buf* bp)
 	 */
 	bp->b_flags &= ~(Buf::B_WANTED | Buf::B_BUSY | Buf::B_ASYNC);
 	pthread_mutex_unlock(&bp->buf_lock);
+	//printf("[DEBUG] 释放缓存块 b")
 	return;
 }
 
@@ -133,8 +147,6 @@ Buf* BufferManager::Bread(int blkno)
 
 void BufferManager::Bwrite(Buf *bp)
 {
-	// unsigned int flags;
-	// flags = bp->b_flags;
 	bp->b_flags &= ~(Buf::B_READ | Buf::B_DONE | Buf::B_ERROR | Buf::B_DELWRI);
 	bp->b_wcount = BufferManager::BUFFER_SIZE;		/* 512字节 */
 

@@ -177,14 +177,14 @@ void FileManager::Close()
 	File* pFile = u.u_ofiles.GetF(fd);
 	if ( NULL == pFile )
 	{
-		//u.u_ar0[User::EAX]=-1;
+		u.u_ar0[User::EAX]=-1;
 		return;
 	}
 
 	/* 释放打开文件描述符fd，递减File结构引用计数 */
 	u.u_ofiles.SetF(fd, NULL);
 	this->m_OpenFileTable->CloseF(pFile);
-	//u.u_ar0[User::EAX]=0;
+	u.u_ar0[User::EAX]=0;
 }
 
 void FileManager::Seek()

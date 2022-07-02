@@ -50,7 +50,9 @@ stringstream print_head(){
     send_str << "||mkdir(char* dirname)                       ||" << endl;
     send_str << "||cd(char* dirname)                          ||" << endl;
     send_str << "||cat(char* dirname)                         ||" << endl;
-    send_str << "||q/Q 退出文件系统                            ||" << endl << endl << endl;
+    send_str << "||copyin(char* ofpath, char *  ifpath)       ||" << endl;
+    send_str << "||copyout(char* ifpath, char *  ofpath)      ||" << endl;
+    send_str << "||q/Q 退出文件系统                           ||" << endl << endl << endl;
 	return send_str;
 }
 class sendU{
@@ -150,7 +152,7 @@ void *start_routine( void *ptr)
 			u.u_error=NOERROR;
 			string cur_path=u.u_curdir;
 			FD fd = SecondFileKernel::Instance().Sys_Open(cur_path,(File::FREAD));
-            send_str <<"fd:" <<fd<< " cur_path:" << cur_path << endl;
+            send_str << " cur_path:" << cur_path << endl;
             char buf[33]={0};
 			while(1){
 				if(SecondFileKernel::Instance().Sys_Read(fd, 32, 33, buf)==0)
